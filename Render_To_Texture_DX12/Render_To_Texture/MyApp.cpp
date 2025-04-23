@@ -94,32 +94,41 @@ int CMyApp::Program_Begin(HINSTANCE	hInstance, int nCmdShow)
 	UpdateWindow (m_hWnd);
 	SetForegroundWindow(m_hWnd);
 
-	m_MeshManager.Init_MeshManager(m_hWnd);
+	try
+	{
+		m_MeshManager.Init_MeshManager(m_hWnd);
 	
-	MSG msg;
+		MSG msg;
 
-    while (TRUE)
-    {
-	    if (PeekMessage (&msg, NULL, 0, 0, PM_REMOVE))
-        {
-		    if (msg.message == WM_QUIT)
+		while (TRUE)
+		{
+			if (PeekMessage (&msg, NULL, 0, 0, PM_REMOVE))
+			{
+				if (msg.message == WM_QUIT)
+					break;
+
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+        
+			if(GetKeyState(VK_ESCAPE) & 0xFF00)
 				break;
 
-			TranslateMessage(&msg);
-            DispatchMessage(&msg);
+			m_MeshManager.Update_MeshManager();
+			m_MeshManager.Draw_MeshManager();
 		}
-        
-		if(GetKeyState(VK_ESCAPE) & 0xFF00)
-			break;
 
-		m_MeshManager.Update_MeshManager();
-		m_MeshManager.Draw_MeshManager();
+	}
+	catch (DxException& e)
+	{
+		//обработка исключений (ошибок runtime)
+		MessageBox(nullptr, e.ToString().c_str(), L"HR FAILED", MB_OK);
 	}
 	
 	DestroyWindow(m_hWnd);
 	UnregisterClass(wcl.lpszClassName, wcl.hInstance);
 
-	return (int) msg.wParam;
+	return 0;
 }
 
 

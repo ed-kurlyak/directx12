@@ -3,6 +3,8 @@
 //======================================================================================
 
 #include "MeshManager.h"
+#include <algorithm>
+#include <iterator>
 
 CMeshManager::CMeshManager()
 {
